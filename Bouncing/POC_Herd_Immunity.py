@@ -41,7 +41,8 @@ class Block:
 
     def draw(self, screen):
         pygame.draw.rect(screen, self.color, (self.x, self.y, self.size, self.size))
-        # pygame.draw.rect(screen, "green", (self.x, self.y, self.size, self.size), 1)  # outer rectangle (green stroke)
+        # pygame.draw.circle(screen, self.color, (int(self.x + self.size / 2), int(self.y + self.size / 2)), self.size // 2)
+        pygame.draw.rect(screen, "green", (self.x, self.y, self.size, self.size), 1)  # outer rectangle (green stroke)
 
 def check_collision(block1, block2):
     return (

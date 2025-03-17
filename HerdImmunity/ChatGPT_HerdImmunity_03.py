@@ -132,7 +132,7 @@ while running:
         screen.blit(result, (10, 40))
 
     pygame.display.flip()
-    clock.tick(30)
+    clock.tick(120)
     days += 1
 
 pygame.quit()

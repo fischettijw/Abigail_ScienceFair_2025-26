@@ -20,9 +20,9 @@ RED = (200, 0, 0)    # Infected
 BLUE = (0, 0, 200)   # Susceptible
 
 # Parameters
-POPULATION = 200
-INFECTION_RADIUS = 10
-INFECTION_PROBABILITY = 0.05  # Chance of spreading when in range
+POPULATION = 200  # Total number of people in the simulation
+INFECTION_RADIUS = 10  
+INFECTION_PROBABILITY = 0.05  # Represents the chance of spreading the infection when an infected person is near a susceptible person
 VACCINATED_PERCENT = 0.7     # Starting vaccinated proportion (adjustable)
 
 # Individual class
