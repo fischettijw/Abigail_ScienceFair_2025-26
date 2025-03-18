@@ -24,7 +24,7 @@ GRAY = (100, 100, 100)  # Deceased
 # Measles Herd Immunity Simulation Parameters
 POPULATION = 400                # Total number of people in the simulation
 
-INFECTION_RADIUS = 40           # Distance within which an infected 
+INFECTION_RADIUS = 5           # Distance within which an infected 
                                 # person can spread the infection
 
 INFECTION_PROBABILITY = 0.97    # Represents the chance of spreading
@@ -48,11 +48,14 @@ DAYS_TO_RECOVERY = 80           # Number of days it takes to recover
 
 RADIUS_OF_PERSON = 5            # Radius of each person in the simulation
 
+FRAME_RATE = 10                 # use 10-60 to demo program and 1000
+                                # to run full speed
+
 
 # START - Individual Person Class  ***************************************
 
 class Person:
-    PERSON_RADIUS = RADIUS_OF_PERSON
+    # PERSON_RADIUS = RADIUS_OF_PERSON
     def __init__(self, x, y, status="susceptible", radius=RADIUS_OF_PERSON):
         self.x = x
         self.y = y
@@ -144,15 +147,10 @@ while running:
 
     check_if_infected()
 
-
-
-
-
-
-
+    pygame.display.set_caption(f"Measles Herd Immunity Simulation  - STATUS: susceptible {12345} - immune {12345} - infected {12345} - deceased {12345}")
 
     pygame.display.flip()
-    clock.tick(10)
+    clock.tick(FRAME_RATE)
     days += 1
 
 pygame.quit()
