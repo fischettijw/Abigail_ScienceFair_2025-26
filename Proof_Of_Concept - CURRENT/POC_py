@@ -1,6 +1,9 @@
 import pygame
 import random
 import math
+import os
+os.system('cls')
+
 
 # Initialize Pygame
 pygame.init()
@@ -19,37 +22,52 @@ BLUE = (0, 0, 200)   # Susceptible
 GRAY = (100, 100, 100)  # Deceased
 
 # Measles Herd Immunity Simulation Parameters
-POPULATION = 200  # Total number of people in the simulation
-INFECTION_RADIUS = 40  # Distance within which an infected 
-                       # person can spread the infection
-INFECTION_PROBABILITY = 0.90  # Represents the chance of spreading
-                              # the infection when an infected person 
-                              # is near a susceptible person
-VACCINATED_PERCENT = 0.40 # Proportion of the population that
-                          # starts as immune (vaccinated)
-HERD_IMMUNITY_THRESHOLD = 0.70 # The percentage of immune people
-                               # needed to stop uncontrolled spread
-DEATH_PROBABILITY = 0.02  # Probability an infected person dies per day
-DAYS_TO_DEATH = 10  # Minimum number of days an infected person must
-                    # be sick before they have a chance to die
+POPULATION = 400                # Total number of people in the simulation
+
+INFECTION_RADIUS = 40           # Distance within which an infected 
+                                # person can spread the infection
+
+INFECTION_PROBABILITY = 0.97    # Represents the chance of spreading
+                                # the infection when an infected person 
+                                # is near a susceptible person
+
+VACCINATED_PERCENT = 0.40       # Proportion of the population that
+                                # starts as immune (vaccinated)
+
+HERD_IMMUNITY_THRESHOLD = 0.70  # The percentage of immune people
+                                # needed to stop uncontrolled spread
+
+DEATH_PROBABILITY = 0.02        # Probability an infected person dies per day
+
+DAYS_TO_DEATH = 10              # Minimum number of days an infected person must
+                                # be sick before they have a chance to die
+
+DAYS_TO_DEATH_MULTIPLIER = 10   # Frame/Day multiplier
+
+DAYS_TO_RECOVERY = 80           # Number of days it takes to recover
+
+RADIUS_OF_PERSON = 5            # Radius of each person in the simulation
 
 
 # START - Individual Person Class  ***************************************
 
 class Person:
-    PERSON_DIAMETER = 10
-    def __init__(self, x, y, status="susceptible"):
+    PERSON_RADIUS = RADIUS_OF_PERSON
+    def __init__(self, x, y, status="susceptible", radius=RADIUS_OF_PERSON):
         self.x = x
         self.y = y
         self.status = status
 
         self.color = BLUE if self.status == "susceptible" else\
-                GREEN if self.status == "immune" else\
-                RED if self.status == "infected" else\
-                GRAY  # Deceased
+                     GREEN if self.status == "immune" else\
+                     RED if self.status == "infected" else\
+                     GRAY  # Deceased
 
-        self.speed_x = random.uniform(-5, 5)
-        self.speed_y = random.uniform(-5, 5)
+        self.speed_x = -random.choice([1,-2,3,-4,5])
+        self.speed_y = -random.choice([-1,2,-3,4,-5])
+
+        self.radius = radius
+        self.age = "adult"  # Child, adult, senior
         self.infection_days = 0  # Days since infected
 
     def move(self):
@@ -58,10 +76,10 @@ class Person:
             self.y += self.speed_y
 
         # Have people bounce off the walls and ceiling
-            if self.x <= 0 or self.x >= WIDTH:
+            if self.x - self.radius <= 0 or self.x + self.radius >= WIDTH:
                 self.speed_x = -self.speed_x
         
-            if self.y <= 0 or self.y >= HEIGHT:
+            if self.y - self.radius <= 0 or self.y + self.radius >= HEIGHT:
                 self.speed_y = -self.speed_y
 
     def draw(self):
@@ -69,22 +87,24 @@ class Person:
                 GREEN if self.status == "immune" else\
                 RED if self.status == "infected" else\
                 GRAY  # Deceased
+        
         pygame.draw.circle(screen, self.color, (int(self.x), int(self.y)),
-                Person.PERSON_DIAMETER)
+                RADIUS_OF_PERSON)
         
 # END - Individual Person Class  *****************************************
 
 # Initialize population
 people = []
 for _ in range(POPULATION):
-    x, y = random.randint(0, WIDTH), random.randint(0, HEIGHT)
+    x = random.randint(RADIUS_OF_PERSON, WIDTH-RADIUS_OF_PERSON)
+    y = random.randint(RADIUS_OF_PERSON, HEIGHT-RADIUS_OF_PERSON)
     if random.random() < VACCINATED_PERCENT:
         people.append(Person(x, y, status="immune"))
     else:
         people.append(Person(x, y))
 
 # Infect one random person
-random.choice([p for p in people if p.status == "susceptible"]).status = "infected"
+people[random.randint(0, POPULATION-1)].status = "infected"
 
 def check_if_infected():
     for person in people:
@@ -92,9 +112,12 @@ def check_if_infected():
             person.infection_days += 1
             
             # If infected for long enough, introduce a probability of death
-            if person.infection_days >= DAYS_TO_DEATH and random.random() < DEATH_PROBABILITY:
+            if person.infection_days >= DAYS_TO_DEATH and random.random() < DEATH_PROBABILITY/DAYS_TO_DEATH_MULTIPLIER:
                 person.status = "deceased"
-                continue
+                # continue        # GOTO THE NEXT PERSON
+            if person.infection_days >= DAYS_TO_RECOVERY and person.status != "deceased":
+                person.status = "immune"
+                # continue        # GOTO THE NEXT PERSON
             
             for other in people:
                 if other.status == "susceptible":
@@ -129,7 +152,7 @@ while running:
 
 
     pygame.display.flip()
-    clock.tick(30)
+    clock.tick(10)
     days += 1
 
 pygame.quit()

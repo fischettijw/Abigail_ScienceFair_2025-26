@@ -72,7 +72,12 @@ class Person:
         if self.y <=0 or self.y >= HEIGHT:
             self.speed_y *= -1
 
-    def draw(self):        
+    def draw(self):  
+        self.color = BLUE if self.status == "susceptible" else\
+                     GREEN if self.status == "immune" else\
+                     RED if self.status == "infected" else\
+                     GRAY # therefore == "deceased"       
+
         pygame.draw.circle(screen,self.color,(int(self.x), int(self.y)), 20)
 # END  -  INDIVIDUAL PERSON CLASS *************************************************
 
