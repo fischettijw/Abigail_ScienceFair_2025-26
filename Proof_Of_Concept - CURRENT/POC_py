@@ -9,9 +9,9 @@ os.system('cls')
 pygame.init()
 
 # Screen Definitions
-WIDTH, HEIGHT = 800, 600
+WIDTH, HEIGHT = 1024, 768
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Measles Herd Immunity Simulation")
+pygame.display.set_caption("Measles in Motion: A Digital Epidemic Simulation")
 
 # Colors
 WHITE = (255, 255, 255)
@@ -22,7 +22,7 @@ BLUE = (0, 0, 200)   # Susceptible
 GRAY = (100, 100, 100)  # Deceased
 
 # Measles Herd Immunity Simulation Parameters
-POPULATION = 400                # Total number of people in the simulation
+POPULATION = 500                # Total number of people in the simulation
 
 INFECTION_RADIUS = 5           # Distance within which an infected 
                                 # person can spread the infection
@@ -55,12 +55,13 @@ FRAME_RATE = 10                 # use 10-60 to demo program and 1000
 # START - Individual Person Class  ***************************************
 
 class Person:
-    # PERSON_RADIUS = RADIUS_OF_PERSON
+    status_all = (123456,234567,345678, 456789)
+
     def __init__(self, x, y, status="susceptible", radius=RADIUS_OF_PERSON):
         self.x = x
         self.y = y
         self.status = status
-
+        
         self.color = BLUE if self.status == "susceptible" else\
                      GREEN if self.status == "immune" else\
                      RED if self.status == "infected" else\
@@ -81,18 +82,20 @@ class Person:
         # Have people bounce off the walls and ceiling
             if self.x - self.radius <= 0 or self.x + self.radius >= WIDTH:
                 self.speed_x = -self.speed_x
-        
+
             if self.y - self.radius <= 0 or self.y + self.radius >= HEIGHT:
                 self.speed_y = -self.speed_y
 
     def draw(self):
         self.color = BLUE if self.status == "susceptible" else\
-                GREEN if self.status == "immune" else\
-                RED if self.status == "infected" else\
-                GRAY  # Deceased
+                     GREEN if self.status == "immune" else\
+                     RED if self.status == "infected" else\
+                     GRAY  # Deceased
         
         pygame.draw.circle(screen, self.color, (int(self.x), int(self.y)),
                 RADIUS_OF_PERSON)
+        
+
         
 # END - Individual Person Class  *****************************************
 
@@ -140,14 +143,21 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-
-    for person in people:
-        person.move()
-        person.draw()
+    
 
     check_if_infected()
 
-    pygame.display.set_caption(f"Measles Herd Immunity Simulation  - STATUS: susceptible {12345} - immune {12345} - infected {12345} - deceased {12345}")
+    # check person status and MOVE & DRAW each person
+    status = [0,0,0,0]
+    for person in people:
+        if person.status == "susceptible": status[0] += 1
+        if person.status == "immune": status[1] += 1
+        if person.status == "infected": status[2] += 1
+        if person.status == "deceased": status[3] += 1
+        person.move()
+        person.draw()
+    
+    pygame.display.set_caption(f"Measles in Motion: A Digital Epidemic Simulation - STATUS: susceptible(BLUE) {status[0]} - immune(GREEN) {status[1]} - infected(RED) {status[2]} - deceased(GRAY) {status[3]}")
 
     pygame.display.flip()
     clock.tick(FRAME_RATE)
