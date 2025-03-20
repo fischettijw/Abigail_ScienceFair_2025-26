@@ -135,7 +135,7 @@ def check_if_infected():
                     if dist < INFECTION_RADIUS and random.random() < INFECTION_PROBABILITY:
                         other.status = "infected"
 
-# Start Main loop -----------------------------------------------------------------------------------------------
+# Main loop
 running = True
 clock = pygame.time.Clock()
 
@@ -168,38 +168,28 @@ while running:
     cap03 = f" - deceased(YELLOW) {status[3]}      Frames: {number_of_frames}"
     pygame.display.set_caption(f"{cap01}{cap02}{cap03}")
 
+    if status[2] <=0:
+        running = False
+
     # Display legend
     pygame.draw.rect(screen, LIGHT_MAGENTA, (0, HEIGHT + LEGION//2 , WIDTH, LEGION//2))
 
-    pos_x = 150
-    pygame.draw.circle(screen, RED, (pos_x, HEIGHT + LEGION//2 + 17), 5)
-    screen.blit(legend_font.render(f"Infected: {status[2]:04d}", True, BLACK), (pos_x + 10, HEIGHT + LEGION//2 + 8 ))
+    pygame.draw.circle(screen, RED, (10, HEIGHT + LEGION//2 + 17), 5)
+    screen.blit(legend_font.render("Infected", True, BLACK), (20, HEIGHT + LEGION//2 + 8 ))
 
-    pos_x += 180
-    pygame.draw.circle(screen, GREEN, (pos_x, HEIGHT + LEGION//2 + 17), 5)
-    screen.blit(legend_font.render(f"Immune: {status[1]:04d}", True, BLACK), (pos_x + 10, HEIGHT + LEGION//2 + 8))
+    pygame.draw.circle(screen, GREEN, (120, HEIGHT + LEGION//2 + 17), 5)
+    screen.blit(legend_font.render("Immune", True, BLACK), (130, HEIGHT + LEGION//2 + 8))
 
-    pos_x += 175
-    pygame.draw.circle(screen, BLUE, (pos_x, HEIGHT + LEGION//2 + 17), 5)
-    screen.blit(legend_font.render(f"Susceptible: {status[0]:04d}", True, BLACK), (pos_x + 10, HEIGHT + LEGION//2 +8))
+    pygame.draw.circle(screen, BLUE, (230, HEIGHT + LEGION//2 + 17), 5)
+    screen.blit(legend_font.render("Susceptible", True, BLACK), (240, HEIGHT + LEGION//2 +8))
 
-    pos_x += 220
-    pygame.draw.circle(screen, YELLOW, (pos_x, HEIGHT + LEGION//2 + 17), 5)
-    screen.blit(legend_font.render(f"Deceased: {status[3]:04d}", True, BLACK), (pos_x + 10, HEIGHT + LEGION//2 +8))
-
-    if status[2] <=0:
-        running = False
+    pygame.draw.circle(screen, YELLOW, (380, HEIGHT + LEGION//2 + 17), 5)
+    screen.blit(legend_font.render("Deceased", True, BLACK), (390, HEIGHT + LEGION//2 +8))
 
     pygame.display.flip()
     clock.tick(FRAME_RATE)
     days += 1
-# End Main loop -------------------------------------------------------------------------------------------------
 
-# wait for a key is hit before closing the screen and quiting
-waiting = True
-while waiting:
-    event = pygame.event.wait()  # Wait for an event
-    if event.type == pygame.KEYDOWN:
-        waiting = False  # Exit the loop when a key is pressed
+pygame.time.delay(8000)
 
 pygame.quit()

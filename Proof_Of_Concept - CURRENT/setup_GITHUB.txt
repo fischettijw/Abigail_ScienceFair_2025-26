@@ -1,0 +1,7 @@
+
+
+git config --global user.name "fischettijw"
+git config --global user.email fischettijw@gmail.com
+
+https://chatgpt.com/share/9ebe3a25-ed4d-4982-94db-2294507fb414
+
