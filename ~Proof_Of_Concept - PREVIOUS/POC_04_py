@@ -56,7 +56,8 @@ FRAME_RATE = 10                 # use 10-60 to demo program and 1000
                                 # to run full speed
 
 
-# START - Individual Person Class  ****************************************************
+# START - Individual Person Class  ***************************************
+
 class Person:
     def __init__(self, x, y, status="susceptible", radius=RADIUS_OF_PERSON):
         self.x = x
@@ -100,7 +101,7 @@ class Person:
             pygame.draw.circle(screen, self.color, (int(self.x), int(self.y)),
                 RADIUS_OF_PERSON)
         
-# END - Individual Person Class  ******************************************************
+# END - Individual Person Class  *****************************************
 
 # Initialize population
 people = []
@@ -134,7 +135,7 @@ def check_if_infected():
                     if dist < INFECTION_RADIUS and random.random() < INFECTION_PROBABILITY:
                         other.status = "infected"
 
-# START: Main loop ----------------------------------------------------------------------------------------------------
+# Start Main loop -----------------------------------------------------------------------------------------------
 running = True
 clock = pygame.time.Clock()
 
@@ -167,8 +168,6 @@ while running:
     cap03 = f" - deceased(YELLOW) {status[3]}      Frames: {number_of_frames}"
     pygame.display.set_caption(f"{cap01}{cap02}{cap03}")
 
-    pygame.display.set_caption(f"Measles in Motion: A Digital Epidemic Simulation (Frames: {number_of_frames})")
-
     # Display legend
     pygame.draw.rect(screen, LIGHT_MAGENTA, (0, HEIGHT + LEGION//2 , WIDTH, LEGION//2))
 
@@ -194,18 +193,13 @@ while running:
     pygame.display.flip()
     clock.tick(FRAME_RATE)
     days += 1
-# End of Main loop ----------------------------------------------------------------------------------------------------
+# End Main loop -------------------------------------------------------------------------------------------------
 
-# Append This Trial to Dataset for Future Data Science Analysis
-# Not Yet Include
-
-# wait for a key hit or "X" clicked to QUIT
+# wait for a key is hit before closing the screen and quiting
 waiting = True
 while waiting:
     event = pygame.event.wait()  # Wait for an event
     if event.type == pygame.KEYDOWN:
         waiting = False  # Exit the loop when a key is pressed
-    if event.type == pygame.QUIT:
-        waiting = False  # Exit the loop when "X" is clicked
 
 pygame.quit()
