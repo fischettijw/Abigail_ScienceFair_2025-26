@@ -8,8 +8,8 @@ import os; os.system('cls')
 pygame.init()
 
 # Screen Definitions
-WIDTH, HEIGHT, LEGION  = 1024, 768, 64
-screen = pygame.display.set_mode((WIDTH, HEIGHT + LEGION))
+WIDTH, HEIGHT, LEGEND  = 1024, 768, 64
+screen = pygame.display.set_mode((WIDTH, HEIGHT + LEGEND))
 pygame.display.set_caption("Measles in Motion: A Digital Epidemic Simulation")
 
 # Colors
@@ -25,8 +25,6 @@ LIGHT_MAGENTA = (224, 0, 224)       # Legend
 # Fonts
 legend_font = pygame.font.SysFont(None, 30)
 
-
-
 # Measles Herd Immunity Simulation Parameters
 POPULATION = 500                # Total number of people in the simulation
 
@@ -40,7 +38,7 @@ INFECTION_PROBABILITY = 0.97    # Represents the chance of spreading
 VACCINATED_PERCENT = 0.40       # Proportion of the population that
                                 # starts as immune (vaccinated)
 
-HERD_IMMUNITY_THRESHOLD = 0.793  # The percentage of immune people
+HERD_IMMUNITY_THRESHOLD = 0.93  # The percentage of immune people
                                 # needed to stop uncontrolled spread
 
 DEATH_PROBABILITY = 0.02        # Probability an infected person dies per day
@@ -86,7 +84,7 @@ class Person:
             if self.x - self.radius <= 0 or self.x + self.radius >= WIDTH:
                 self.speed_x = -self.speed_x
 
-            if self.y - self.radius <= 0 or self.y + self.radius >= HEIGHT + LEGION//2:
+            if self.y - self.radius <= 0 or self.y + self.radius >= HEIGHT + LEGEND//2:
                 self.speed_y = -self.speed_y
 
     def draw(self):
@@ -118,13 +116,9 @@ for _ in range(POPULATION):
 people[random.randint(0, POPULATION-1)].status = "infected"
 
 def check_if_infected():
-    # Total number of infections
-    total_infections = 0
     for person in people:
-        orig_status = person.status
         if person.status == "infected":
             person.infection_days += 1
-            # total_infections ??????????????????????????
             
             # If infected for long enough, introduce a probability of death
             if person.infection_days >= DAYS_TO_DEATH and random.random() < DEATH_PROBABILITY/DAYS_TO_DEATH_MULTIPLIER:
@@ -139,9 +133,6 @@ def check_if_infected():
                     dist = math.hypot(person.x - other.x, person.y - other.y)
                     if dist < INFECTION_RADIUS and random.random() < INFECTION_PROBABILITY:
                         other.status = "infected"
-                        total_infections = 1
-
-    return total_infections
 
 # START: Main loop ----------------------------------------------------------------------------------------------------
 running = True
@@ -150,7 +141,6 @@ clock = pygame.time.Clock()
 number_of_frames = 0
 days = 0
 herd_immunity_achieved = False
-total_infections = 1
 while running:
     number_of_frames += 1
     screen.fill(GRAY)
@@ -159,8 +149,7 @@ while running:
         if event.type == pygame.QUIT:
             running = False
     
-    # Total number of infections
-    total_infections += check_if_infected()
+    check_if_infected()
 
     # check person status and MOVE & DRAW each person
     status = [0,0,0,0]
@@ -181,27 +170,23 @@ while running:
     pygame.display.set_caption(f"Measles in Motion: A Digital Epidemic Simulation (Frames: {number_of_frames})")
 
     # Display legend
-    pygame.draw.rect(screen, LIGHT_MAGENTA, (0, HEIGHT + LEGION//2 , WIDTH, LEGION//2))
+    pygame.draw.rect(screen, LIGHT_MAGENTA, (0, HEIGHT + LEGEND//2 , WIDTH, LEGEND//2))
 
-    pos_x = 0
-    # pygame.draw.circle(screen, RED, (pos_x, HEIGHT + LEGION//2 + 17), 5)
-    screen.blit(legend_font.render(f"Total Infected: {total_infections:04d}", True, BLACK), (pos_x + 10, HEIGHT + LEGION//2 + 8 ))
-
-    pos_x = 280
-    pygame.draw.circle(screen, RED, (pos_x, HEIGHT + LEGION//2 + 17), 5)
-    screen.blit(legend_font.render(f"Infected: {status[2]:04d}", True, BLACK), (pos_x + 10, HEIGHT + LEGION//2 + 8 ))
+    pos_x = 150
+    pygame.draw.circle(screen, RED, (pos_x, HEIGHT + LEGEND//2 + 17), 5)
+    screen.blit(legend_font.render(f"Infected: {status[2]:04d}", True, BLACK), (pos_x + 10, HEIGHT + LEGEND//2 + 8 ))
 
     pos_x += 180
-    pygame.draw.circle(screen, GREEN, (pos_x, HEIGHT + LEGION//2 + 17), 5)
-    screen.blit(legend_font.render(f"Immune: {status[1]:04d}", True, BLACK), (pos_x + 10, HEIGHT + LEGION//2 + 8))
+    pygame.draw.circle(screen, GREEN, (pos_x, HEIGHT + LEGEND//2 + 17), 5)
+    screen.blit(legend_font.render(f"Immune: {status[1]:04d}", True, BLACK), (pos_x + 10, HEIGHT + LEGEND//2 + 8))
 
     pos_x += 175
-    pygame.draw.circle(screen, BLUE, (pos_x, HEIGHT + LEGION//2 + 17), 5)
-    screen.blit(legend_font.render(f"Susceptible: {status[0]:04d}", True, BLACK), (pos_x + 10, HEIGHT + LEGION//2 +8))
+    pygame.draw.circle(screen, BLUE, (pos_x, HEIGHT + LEGEND//2 + 17), 5)
+    screen.blit(legend_font.render(f"Susceptible: {status[0]:04d}", True, BLACK), (pos_x + 10, HEIGHT + LEGEND//2 +8))
 
     pos_x += 220
-    pygame.draw.circle(screen, YELLOW, (pos_x, HEIGHT + LEGION//2 + 17), 5)
-    screen.blit(legend_font.render(f"Deceased: {status[3]:04d}", True, BLACK), (pos_x + 10, HEIGHT + LEGION//2 +8))
+    pygame.draw.circle(screen, YELLOW, (pos_x, HEIGHT + LEGEND//2 + 17), 5)
+    screen.blit(legend_font.render(f"Deceased: {status[3]:04d}", True, BLACK), (pos_x + 10, HEIGHT + LEGEND//2 +8))
 
     if status[2] <=0:
         running = False
@@ -223,4 +208,5 @@ while waiting:
     if event.type == pygame.QUIT:
         waiting = False  # Exit the loop when "X" is clicked
 
+os.system('cls')
 pygame.quit()
