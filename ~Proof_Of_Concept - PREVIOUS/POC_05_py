@@ -10,7 +10,7 @@ pygame.init()
 # Screen Definitions
 WIDTH, HEIGHT, LEGION  = 1024, 768, 64
 screen = pygame.display.set_mode((WIDTH, HEIGHT + LEGION))
-pygame.display.set_caption("Measles in Motion: A Digital Epidemic Simulation by Abigail Lightle")
+pygame.display.set_caption("Measles in Motion: A Digital Epidemic Simulation")
 
 # Colors
 WHITE = (255, 255, 255)
@@ -25,11 +25,10 @@ LIGHT_MAGENTA = (224, 0, 224)       # Legend
 # Fonts
 legend_font = pygame.font.SysFont(None, 30)
 
-# Trial Data
-status = []
+
 
 # Measles Herd Immunity Simulation Parameters
-POPULATION = 2000               # Total number of people in the simulation
+POPULATION = 500                # Total number of people in the simulation
 
 INFECTION_RADIUS = 5            # Distance within which an infected 
                                 # person can spread the infection
@@ -38,11 +37,11 @@ INFECTION_PROBABILITY = 0.97    # Represents the chance of spreading
                                 # the infection when an infected person 
                                 # is near a susceptible person
 
-VACCINATED_PERCENT = 0.70       # Proportion of the population that
+VACCINATED_PERCENT = 0.40       # Proportion of the population that
                                 # starts as immune (vaccinated)
 
-HERD_IMMUNITY_THRESHOLD = 0.793 # The percentage of immune people
-                                # needed to stop uncontrolled spread (NOT USED)
+HERD_IMMUNITY_THRESHOLD = 0.793  # The percentage of immune people
+                                # needed to stop uncontrolled spread
 
 DEATH_PROBABILITY = 0.02        # Probability an infected person dies per day
 
@@ -125,6 +124,7 @@ def check_if_infected():
         orig_status = person.status
         if person.status == "infected":
             person.infection_days += 1
+            # total_infections ??????????????????????????
             
             # If infected for long enough, introduce a probability of death
             if person.infection_days >= DAYS_TO_DEATH and random.random() < DEATH_PROBABILITY/DAYS_TO_DEATH_MULTIPLIER:
@@ -151,7 +151,6 @@ number_of_frames = 0
 days = 0
 herd_immunity_achieved = False
 total_infections = 1
-
 while running:
     number_of_frames += 1
     screen.fill(GRAY)
@@ -163,8 +162,8 @@ while running:
     # Total number of infections
     total_infections += check_if_infected()
 
-    status = [0,0,0,0]
     # check person status and MOVE & DRAW each person
+    status = [0,0,0,0]
     for person in people:
         if person.status == "susceptible": status[0] += 1
         if person.status == "immune": status[1] += 1
@@ -173,21 +172,20 @@ while running:
         person.move()
         person.draw()
     
-    # # Display stats in Caption
-    # cap01 = f"Measles in Motion: A Digital Epidemic Simulation - STATUS: "
-    # cap02 = f"{status[0]} - immune(GREEN) {status[1]} - infected(RED) {status[2]}"
-    # cap03 = f" - deceased(YELLOW) {status[3]}      Frames: {number_of_frames}"
-    # pygame.display.set_caption(f"{cap01}{cap02}{cap03}")
+    # Display stats in Caption
+    cap01 = f"Measles in Motion: A Digital Epidemic Simulation - STATUS: "
+    cap02 = f"{status[0]} - immune(GREEN) {status[1]} - infected(RED) {status[2]}"
+    cap03 = f" - deceased(YELLOW) {status[3]}      Frames: {number_of_frames}"
+    pygame.display.set_caption(f"{cap01}{cap02}{cap03}")
 
-    pygame.display.set_caption(f"Measles in Motion: A Digital Epidemic Simulation by Abigail Lightle\
-                               (FPS: {int(clock.get_fps()+1)})   (Frames: {number_of_frames})   (Population: {POPULATION})")
+    pygame.display.set_caption(f"Measles in Motion: A Digital Epidemic Simulation (Frames: {number_of_frames})")
 
     # Display legend
     pygame.draw.rect(screen, LIGHT_MAGENTA, (0, HEIGHT + LEGION//2 , WIDTH, LEGION//2))
 
     pos_x = 0
     # pygame.draw.circle(screen, RED, (pos_x, HEIGHT + LEGION//2 + 17), 5)
-    screen.blit(legend_font.render(f"Total Infections: {total_infections:04d}", True, BLACK), (pos_x + 10, HEIGHT + LEGION//2 + 8 ))
+    screen.blit(legend_font.render(f"Total Infected: {total_infections:04d}", True, BLACK), (pos_x + 10, HEIGHT + LEGION//2 + 8 ))
 
     pos_x = 280
     pygame.draw.circle(screen, RED, (pos_x, HEIGHT + LEGION//2 + 17), 5)
@@ -211,30 +209,10 @@ while running:
     pygame.display.flip()
     clock.tick(FRAME_RATE)
     days += 1
-
-    
-# END: Main loop -----------------------------------------------------------------------------------------------------
+# End of Main loop ----------------------------------------------------------------------------------------------------
 
 # Append This Trial to Dataset for Future Data Science Analysis
-def append_trial_data_to_dataset(data):
-    # Append the trial data to the dataset
-    dataset_file = "Proof_Of_Concept_DataSet/measles_dataset.csv"
-
-    # Save the dataset to a file
-    with open(dataset_file, "a") as file:
-        file.write(str(data) + "\n")
-
-    print("Trial data appended to dataset.")
-
-# 
-trial01=f"{FRAME_RATE: g},{RADIUS_OF_PERSON: g},{DAYS_TO_RECOVERY: g}"
-trial02=f"{DAYS_TO_DEATH_MULTIPLIER: g},{DAYS_TO_DEATH: g},{DEATH_PROBABILITY: g}"
-trial03=f"{HERD_IMMUNITY_THRESHOLD: g},{VACCINATED_PERCENT: g},{INFECTION_PROBABILITY: g}"
-trial04=f"{INFECTION_RADIUS: g},{POPULATION: g},{total_infections: g},{status[2]: g}"
-trial05=f"{status[1]: g},{status[0]: g},{status[3]: g},{number_of_frames: g}"
-trial_data = f"{trial01},{trial02},{trial03},{trial04},{trial05}"
-
-append_trial_data_to_dataset(trial_data)
+# Not Yet Include
 
 # wait for a key hit or "X" clicked to QUIT
 waiting = True
