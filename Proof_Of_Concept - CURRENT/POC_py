@@ -29,7 +29,7 @@ legend_font = pygame.font.SysFont(None, 30)
 status = []
 
 # Measles Herd Immunity Simulation Parameters
-POPULATION = 2000               # Total number of people in the simulation
+POPULATION = 1500               # Total number of people in the simulation
 
 INFECTION_RADIUS = 5            # Distance within which an infected 
                                 # person can spread the infection
@@ -220,9 +220,14 @@ def append_trial_data_to_dataset(data):
     # Append the trial data to the dataset
     dataset_file = "Proof_Of_Concept_DataSet/measles_dataset.csv"
 
-    # Save the dataset to a file
-    with open(dataset_file, "a") as file:
-        file.write(str(data) + "\n")
+# Append the Trial Data to the csv file
+    if os.path.exists(dataset_file):
+        with open(dataset_file, "a") as file:
+            file.write(str(data) + "\n")
+    else:
+        with open(dataset_file, "a") as file:
+            file.write("fps,p_rad,days_r,dm,d_t_d,d_prob,h_i_t,vac_p,inf_p,i_rad,pop,t_inf,n_inf,imm,sus,dec,frames\n")
+            file.write(str(data) + "\n")
 
     print("Trial data appended to dataset.")
 
