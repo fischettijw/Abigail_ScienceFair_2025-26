@@ -5,12 +5,15 @@ import random
 import math
 import os; os.system('cls')
 
-# random.seed(12345)
 
-NUMBER_OF_TRIALS = 1
+NUMBER_OF_TRIALS = 5
+seed = 0    
 trial_number = 0
 
 for _ in range(NUMBER_OF_TRIALS):
+    seed +=1
+    random.seed(seed)
+
     # Initialize Pygame
     pygame.init()
 
@@ -45,8 +48,10 @@ for _ in range(NUMBER_OF_TRIALS):
                                     # the infection when an infected person 
                                     # is near a susceptible person
 
-    VACCINATED_PERCENT = 0.70       # Proportion of the population that
+    VACCINATED_PERCENT =  0.70      # Proportion of the population that
                                     # starts as immune (vaccinated)
+
+    VACCINE_EFFECTIVENESS = 0.97    # Vaccine effectiveness 
 
     HERD_IMMUNITY_THRESHOLD = 0.793 # The percentage of immune people
                                     # needed to stop uncontrolled spread (NOT USED)
@@ -58,11 +63,11 @@ for _ in range(NUMBER_OF_TRIALS):
 
     DAYS_TO_DEATH_MULTIPLIER = 10   # Frame/Day multiplier
 
-    DAYS_TO_RECOVERY = 80           # Number of days it takes to recover
+    DAYS_TO_RECOVERY = 80          # Number of days it takes to recover
 
     RADIUS_OF_PERSON = 5            # Radius of each person in the simulation
 
-    FRAME_RATE = 10                 # use 10-60 to demo program and 1000
+    FRAME_RATE = 1000                # use 10-60 to demo program and 1000
                                     # to run full speed
 
 
@@ -152,6 +157,15 @@ for _ in range(NUMBER_OF_TRIALS):
                             other.status = "infected"
                             total_infections = 1
 
+                    # The following code would potentially infect an immune person 
+                    # https://www.mayoclinic.org/diseases-conditions/measles/expert-answers/getting-measles-after-vaccination/faq-20125397
+
+                    if other.status == "immune" and person.status == "infected":
+                        dist = math.hypot(person.x - other.x, person.y - other.y)
+                        if dist < INFECTION_RADIUS and random.random() > VACCINE_EFFECTIVENESS:
+                            other.status = "infected"
+                            total_infections = 1
+
         return total_infections
 
     # START: Main loop ----------------------------------------------------------------------------------------------------
@@ -184,14 +198,8 @@ for _ in range(NUMBER_OF_TRIALS):
             person.move()
             person.draw()
         
-        # # Display stats in Caption
-        # cap01 = f"Measles in Motion: A Digital Epidemic Simulation - STATUS: "
-        # cap02 = f"{status[0]} - immune(GREEN) {status[1]} - infected(RED) {status[2]}"
-        # cap03 = f" - deceased(YELLOW) {status[3]}      Frames: {number_of_frames}"
-        # pygame.display.set_caption(f"{cap01}{cap02}{cap03}")
-
         pygame.display.set_caption(f"Measles in Motion: A Digital Epidemic Simulation by Abigail Lightle\
-                                (FPS: {int(clock.get_fps()+1)})   (Frames: {number_of_frames})   (Population: {POPULATION})")
+                (FPS: {int(clock.get_fps()+1)})   (Frames: {number_of_frames})   (Population: {POPULATION})   (Seed: {seed} of {NUMBER_OF_TRIALS})    (Vaccinated: {int(VACCINATED_PERCENT*100)}%)")
 
         # Display legend
         pygame.draw.rect(screen, LIGHT_MAGENTA, (0, HEIGHT + LEGION//2 , WIDTH, LEGION//2))
@@ -238,19 +246,19 @@ for _ in range(NUMBER_OF_TRIALS):
                 file.write(str(data) + "\n")
         else:
             with open(dataset_file, "a") as file:
-                file.write("fps,p_rad,days_r,dm,d_t_d,d_prob,h_i_t,vac_p,inf_p,i_rad,pop,t_inf,n_inf,imm,sus,dec,frames\n")
+                file.write("fps,p_rad,days_r,dm,d_t_d,d_prob,h_i_t,vac_p,inf_p,i_rad,pop,t_inf,n_inf,imm,sus,dec,frames, seed\n")
                 file.write(str(data) + "\n")
 
         os.system('cls')
         trial_number += 1
-        print(f"\nTrial {trial_number} data appended to dataset.\n")
+        print(f"\nTrial {trial_number} of {NUMBER_OF_TRIALS} data appended to dataset.\n")
 
     # 
     trial01=f"{FRAME_RATE: g},{RADIUS_OF_PERSON: g},{DAYS_TO_RECOVERY: g}"
     trial02=f"{DAYS_TO_DEATH_MULTIPLIER: g},{DAYS_TO_DEATH: g},{DEATH_PROBABILITY: g}"
     trial03=f"{HERD_IMMUNITY_THRESHOLD: g},{VACCINATED_PERCENT: g},{INFECTION_PROBABILITY: g}"
     trial04=f"{INFECTION_RADIUS: g},{POPULATION: g},{total_infections: g},{status[2]: g}"
-    trial05=f"{status[1]: g},{status[0]: g},{status[3]: g},{number_of_frames: g}"
+    trial05=f"{status[1]: g},{status[0]: g},{status[3]: g},{number_of_frames: g}, {seed: g}"
     trial_data = f"{trial01},{trial02},{trial03},{trial04},{trial05}"
 
     append_trial_data_to_dataset(trial_data)
