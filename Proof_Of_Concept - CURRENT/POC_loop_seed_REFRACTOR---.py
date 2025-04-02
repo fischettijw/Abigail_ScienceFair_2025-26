@@ -48,15 +48,15 @@ for _ in range(NUMBER_OF_TRIALS):
                                     # the infection when an infected person 
                                     # is near a susceptible person
 
-    VACCINATED_PERCENT =  0.40      # Proportion of the population that
+    VACCINATED_PERCENT =  0.90      # Proportion of the population that
                                     # starts as immune (vaccinated)
 
     VACCINE_EFFECTIVENESS = 0.97    # Vaccine effectiveness 
 
-    HERD_IMMUNITY_THRESHOLD = 0.793 # The percentage of immune people
+    HERD_IMMUNITY_THRESHOLD = 0.93 # The percentage of immune people
                                     # needed to stop uncontrolled spread (NOT USED)
 
-    DEATH_PROBABILITY = 0.02        # Probability an infected person dies per day
+    DEATH_PROBABILITY = 0.02        # Probability an infected person dies
 
     DAYS_TO_DEATH = 10              # Minimum number of days an infected person must
                                     # be sick before they have a chance to die
@@ -148,7 +148,7 @@ for _ in range(NUMBER_OF_TRIALS):
                     # continue        # GOTO THE NEXT PERSON
                 if person.infection_days >= DAYS_TO_RECOVERY and person.status != "deceased":
                     person.status = "immune"
-                    # continue        # GOTO THE NEXT PERSON
+                    # continue        # GOTO THE NEXT PERSON               
                 
                 for other in people:
                     if other.status == "susceptible":
