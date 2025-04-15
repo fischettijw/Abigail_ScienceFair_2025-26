@@ -48,7 +48,7 @@ for _ in range(NUMBER_OF_TRIALS):
                                     # the infection when an infected person 
                                     # is near a susceptible person
 
-    VACCINATED_PERCENT =  0.90      # Proportion of the population that
+    VACCINATED_PERCENT =  0.87      # Proportion of the population that
                                     # starts as immune (vaccinated)
 
     VACCINE_EFFECTIVENESS = 0.97    # Vaccine effectiveness 
@@ -89,6 +89,7 @@ for _ in range(NUMBER_OF_TRIALS):
             self.radius = radius
             self.age = "adult"  # Child, adult, senior
             self.infection_days = 0  # Days since infected
+            self.num_infected = 0
 
         def move(self):
             if self.status != "deceased":
@@ -156,6 +157,7 @@ for _ in range(NUMBER_OF_TRIALS):
                         if dist < INFECTION_RADIUS and random.random() < INFECTION_PROBABILITY:
                             other.status = "infected"
                             total_infections = 1
+                            other.num_infected += 1
 
                     # The following code would potentially infect an immune person 
                     # https://www.mayoclinic.org/diseases-conditions/measles/expert-answers/getting-measles-after-vaccination/faq-20125397
@@ -165,6 +167,7 @@ for _ in range(NUMBER_OF_TRIALS):
                         if dist < INFECTION_RADIUS and random.random() > VACCINE_EFFECTIVENESS:
                             other.status = "infected"
                             total_infections = 1
+                            other.num_infected += 1
 
         return total_infections
 
@@ -249,9 +252,9 @@ for _ in range(NUMBER_OF_TRIALS):
                 file.write("fps,p_rad,days_r,dm,d_t_d,d_prob,h_i_t,vac_p,inf_p,i_rad,pop,t_inf,n_inf,imm,sus,dec,frames, seed\n")
                 file.write(str(data) + "\n")
 
-        os.system('cls')
+        # os.system('cls')
         trial_number += 1
-        print(f"\nTrial {trial_number} of {NUMBER_OF_TRIALS} data appended to dataset.\n")
+        # print(f"\nTrial {trial_number} of {NUMBER_OF_TRIALS} data appended to dataset.\n ")
 
     # 
     trial01=f"{FRAME_RATE: g},{RADIUS_OF_PERSON: g},{DAYS_TO_RECOVERY: g}"
@@ -275,8 +278,14 @@ for _ in range(NUMBER_OF_TRIALS):
     # print(len(people))     # used for debugging
 
     # delete ALL instances of people
-    for _ in range(len(people)):
+    num_people = 0
+    for i in range(len(people)):
+        if people[0].num_infected > 1:
+            num_people += 1
+            # print(i, people[0].num_infected, num_people)
         del people[0]
+
+    print(num_people)
 
     # print(len(people))     # used for debugging
 
