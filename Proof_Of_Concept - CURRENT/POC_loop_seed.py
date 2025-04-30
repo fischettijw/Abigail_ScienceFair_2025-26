@@ -3,10 +3,10 @@
 import pygame
 import random
 import math
-import os; os.system('cls')
+import os; os.system('cls')   # clear terminal screen
 
 
-NUMBER_OF_TRIALS = 10
+NUMBER_OF_TRIALS = 100
 seed = 0    
 trial_number = 0
 
@@ -48,7 +48,7 @@ for _ in range(NUMBER_OF_TRIALS):
                                     # the infection when an infected person 
                                     # is near a susceptible person
 
-    VACCINATED_PERCENT =  0.90      # Proportion of the population that
+    VACCINATED_PERCENT =  0.90     # Proportion of the population that
                                     # starts as immune (vaccinated)
 
     VACCINE_EFFECTIVENESS = 0.97    # Vaccine effectiveness 

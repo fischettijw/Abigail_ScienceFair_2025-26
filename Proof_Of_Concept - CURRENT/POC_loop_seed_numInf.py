@@ -3,10 +3,11 @@
 import pygame
 import random
 import math
+import statistics
 import os; os.system('cls')
 
 
-NUMBER_OF_TRIALS = 10
+NUMBER_OF_TRIALS = 100
 seed = 0    
 trial_number = 0
 
@@ -48,7 +49,7 @@ for _ in range(NUMBER_OF_TRIALS):
                                     # the infection when an infected person 
                                     # is near a susceptible person
 
-    VACCINATED_PERCENT =  0.87      # Proportion of the population that
+    VACCINATED_PERCENT =  1.00      # Proportion of the population that
                                     # starts as immune (vaccinated)
 
     VACCINE_EFFECTIVENESS = 0.97    # Vaccine effectiveness 
@@ -139,7 +140,7 @@ for _ in range(NUMBER_OF_TRIALS):
         # Total number of infections
         total_infections = 0
         for person in people:
-            orig_status = person.status
+            # orig_status = person.status
             if person.status == "infected":
                 person.infection_days += 1
                 
@@ -279,14 +280,14 @@ for _ in range(NUMBER_OF_TRIALS):
 
     # delete ALL instances of people
     num_people = 0
+    all_num_people = []
     for i in range(len(people)):
-        if people[0].num_infected > 1:
+        if people[0].num_infected > 0:
+            all_num_people.append(people[0].num_infected)
             num_people += 1
-            # print(i, people[0].num_infected, num_people)
+        print(i, people[0].num_infected, num_people)
         del people[0]
-
-    print(num_people)
-
-    # print(len(people))     # used for debugging
-
+    
+    print(len(all_num_people), statistics.mean(all_num_people))
+    print()
     pygame.quit()
